@@ -1,0 +1,125 @@
+<div class="bg-background-light dark:bg-background-dark min-h-screen w-full flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
+    <div class="w-full max-w-2xl flex flex-col gap-6">
+        <!-- Main Card -->
+        <div class="bg-white dark:bg-gray-800 shadow-lg rounded-xl overflow-hidden w-full relative">
+            <div class="px-6 py-8 sm:p-10">
+                <!-- Header Section -->
+                <div class="flex flex-col items-center mb-8">
+                    <!-- Logo -->
+                    <div class="h-12 w-48 mb-6 bg-contain bg-center bg-no-repeat" data-alt="Casa Olimpo Official Logo"
+                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBT-jbSEGR8R1gwqCO3GAdNcb9OECQMjoqbn0A2yPWJK_RVQjeyoVC5LRIBpwleMLuGiH0tY_YpukBlrPtoz1Zq_wkFAA55NR5KwuqE5SeOMBC8OT6owEa1RgLGSwYn4KxphkNxkCGcMjJUPl3Ce32rEmVdUxX4VJO9pQWZuKmWJ_ybH0BrvQp0rDwShwG6l30yri5WiuEj-P52hk4oLPk10sSwnq7zftI2QFRGbp-xVlqRCpeKx2JOOg3JBU7rzsKMIXpYBoOx8UM');">
+                    </div>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight text-center">Crear una cuenta</h1>
+                </div>
+                <!-- Registration Form -->
+                <form class="space-y-5">
+                    <!-- Names Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <!-- Nombres -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-sm font-medium text-gray-900 dark:text-gray-200"
+                                for="nombres">Nombres</label>
+                            <input
+                                class="bg-gray-50 border border-border-light text-gray-900 sm:text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5 placeholder-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
+                                id="nombres" placeholder="Juan" type="text" />
+                        </div>
+                        <!-- Apellidos -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-sm font-medium text-gray-900 dark:text-gray-200"
+                                for="apellidos">Apellidos</label>
+                            <input
+                                class="bg-gray-50 border border-border-light text-gray-900 sm:text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5 placeholder-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
+                                id="apellidos" placeholder="Pérez" type="text" />
+                        </div>
+                    </div>
+                    <!-- Cédula -->
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-sm font-medium text-gray-900 dark:text-gray-200" for="cedula">Cédula</label>
+                        <input
+                            class="bg-gray-50 border border-border-light text-gray-900 sm:text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5 placeholder-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
+                            id="cedula" placeholder="1234567890" type="text" />
+                    </div>
+                    <!-- Email -->
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-sm font-medium text-gray-900 dark:text-gray-200" for="email">Email</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500 dark:text-gray-400">
+                                <span class="material-symbols-outlined" style="font-size: 20px;">mail</span>
+                            </div>
+                            <input
+                                class="bg-gray-50 border border-border-light text-gray-900 sm:text-sm rounded-lg focus:ring-primary focus:border-primary block w-full pl-10 p-2.5 placeholder-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
+                                id="email" placeholder="name@company.com" type="email" />
+                        </div>
+                    </div>
+                    <!-- Password -->
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-sm font-medium text-gray-900 dark:text-gray-200"
+                            for="password">Contraseña</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500 dark:text-gray-400">
+                                <span class="material-symbols-outlined" style="font-size: 20px;">lock</span>
+                            </div>
+                            <input
+                                class="bg-gray-50 border border-border-light text-gray-900 sm:text-sm rounded-lg focus:ring-primary focus:border-primary block w-full pl-10 p-2.5 placeholder-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
+                                id="password" placeholder="••••••••" type="password" />
+                        </div>
+                    </div>
+                    <!-- Confirm Password -->
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-sm font-medium text-gray-900 dark:text-gray-200"
+                            for="confirm-password">Confirmar Contraseña</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500 dark:text-gray-400">
+                                <span class="material-symbols-outlined" style="font-size: 20px;">lock</span>
+                            </div>
+                            <input
+                                class="bg-gray-50 border border-border-light text-gray-900 sm:text-sm rounded-lg focus:ring-primary focus:border-primary block w-full pl-10 p-2.5 placeholder-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
+                                id="confirm-password" placeholder="••••••••" type="password" />
+                        </div>
+                    </div>
+                    <!-- Terms Checkbox -->
+                    <!-- <div class="flex items-start pt-2">
+                        <div class="flex h-5 items-center">
+                            <input
+                                class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800"
+                                id="terms" name="terms" type="checkbox" />
+                        </div>
+                        <div class="ml-3 text-sm">
+                            <label class="font-medium text-gray-700 dark:text-gray-300" for="terms">
+                                I accept the <a
+                                    class="text-primary hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                                    href="#">Términos y Condiciones</a>
+                            </label>
+                        </div>
+                    </div> -->
+                    <!-- Submit Button -->
+                    <div class="pt-2">
+                        <button
+                            class="flex w-full justify-center rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition-colors"
+                            type="submit">
+                            Crear cuenta
+                        </button>
+                    </div>
+                    <!-- Footer -->
+                    <div class="relative flex items-center justify-center pt-2">
+                        <div class="text-sm">
+                            <span class="text-gray-500 dark:text-gray-400">¿Ya tienes una cuenta?</span>
+                            <a class="font-medium text-primary hover:text-blue-500 ml-1 transition-colors" routerLink="/login">
+                                Iniciar sesión
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Bottom decorative bar for branding touch -->
+            <div class="h-1.5 w-full bg-primary/20">
+                <div class="h-full w-1/3 bg-primary"></div>
+            </div>
+        </div>
+        <!-- Bottom copyright or generic info (optional context filler) -->
+        <div class="text-center">
+            <p class="text-xs text-gray-500 dark:text-gray-400">© 2023 Casa Olimpo Admin Panel. All rights reserved.
+            </p>
+        </div>
+    </div>
+</div>
