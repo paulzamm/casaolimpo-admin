@@ -16,9 +16,10 @@ export class CategoryService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/api/admin/categories`;
 
-  getAll(params?: { skip?: number; limit?: number }): Observable<PaginatedResponse<Category>> {
+  getAll(params?: { search?: string; skip?: number; limit?: number }): Observable<PaginatedResponse<Category>> {
     let httpParams = new HttpParams();
     
+    if (params?.search) httpParams = httpParams.set('search', params.search);
     if (params?.skip !== undefined) httpParams = httpParams.set('skip', params.skip.toString());
     if (params?.limit !== undefined) httpParams = httpParams.set('limit', params.limit.toString());
 

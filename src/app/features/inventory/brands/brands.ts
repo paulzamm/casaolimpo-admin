@@ -55,7 +55,11 @@ export class Brands implements OnInit {
     this.cdr.detectChanges();
     const skip = (this.currentPage - 1) * this.itemsPerPage;
     
-    this.brandService.getAll({ skip, limit: this.itemsPerPage }).subscribe({
+    this.brandService.getAll({ 
+      search: this.searchTerm || undefined,
+      skip, 
+      limit: this.itemsPerPage 
+    }).subscribe({
       next: (response) => {
         this.brands = response.items;
         this.totalItems = response.total;
@@ -74,10 +78,12 @@ export class Brands implements OnInit {
 
   onSearchChange(event: Event): void {
     this.searchTerm = (event.target as HTMLInputElement).value;
-    // TODO: Implementar búsqueda en el servidor
+    this.currentPage = 1;
+    this.loadBrands();
   }
 
   getBrands(): Brand[] {
+    return this.brands;
     return this.brands;
   }
 

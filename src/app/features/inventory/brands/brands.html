@@ -128,10 +128,10 @@
             <li>
               <button 
                 (click)="goToPage(page)"
-                [class.text-primary-600]="currentPage === page"
-                [class.bg-primary-50]="currentPage === page"
-                [class.border-primary-300]="currentPage === page"
-                class="cursor-pointer flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                [ngClass]="currentPage === page ? 
+                    'bg-primary-700 text-white border-primary-700 dark:bg-primary-600 dark:border-primary-600' : 
+                    'text-gray-500 bg-white border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'"
+                class="cursor-pointer flex items-center justify-center text-sm py-2 px-3 leading-tight border">
                 {{ page }}
               </button>
             </li>

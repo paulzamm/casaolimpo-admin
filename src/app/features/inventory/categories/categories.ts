@@ -55,7 +55,11 @@ export class Categories implements OnInit {
     this.cdr.detectChanges();
     const skip = (this.currentPage - 1) * this.itemsPerPage;
     
-    this.categoryService.getAll({ skip, limit: this.itemsPerPage }).subscribe({
+    this.categoryService.getAll({ 
+      search: this.searchTerm || undefined,
+      skip, 
+      limit: this.itemsPerPage 
+    }).subscribe({
       next: (response) => {
         this.categories = response.items;
         this.totalItems = response.total;
@@ -74,10 +78,12 @@ export class Categories implements OnInit {
 
   onSearchChange(event: Event): void {
     this.searchTerm = (event.target as HTMLInputElement).value;
-    // TODO: Implementar búsqueda en el servidor
+    this.currentPage = 1;
+    this.loadCategories();
   }
 
   getCategories(): Category[] {
+    return this.categories;
     return this.categories;
   }
 
