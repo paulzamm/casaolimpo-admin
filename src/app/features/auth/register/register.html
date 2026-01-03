@@ -10,7 +10,7 @@
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight text-center">Crear una cuenta</h1>
                 </div>
                 <!-- Registration Form -->
-                <form class="space-y-5">
+                <form [formGroup]="registerForm" (ngSubmit)="register()" class="space-y-5">
                     <!-- Names Grid -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <!-- Nombres -->
@@ -18,24 +18,36 @@
                             <label class="text-sm font-medium text-gray-900 dark:text-gray-200"
                                 for="nombres">Nombres</label>
                             <input
+                                formControlName="nombres"
                                 class="bg-gray-50 border border-border-light text-gray-900 sm:text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5 placeholder-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
+                                [class.border-red-500]="f['nombres'].touched && f['nombres'].errors"
                                 id="nombres" placeholder="Juan" type="text" />
+                            <span *ngIf="f['nombres'].touched && f['nombres'].errors?.['required']" class="text-xs text-red-600">Los nombres son requeridos</span>
+                            <span *ngIf="f['nombres'].touched && f['nombres'].errors?.['minlength']" class="text-xs text-red-600">Mínimo 2 caracteres</span>
                         </div>
                         <!-- Apellidos -->
                         <div class="flex flex-col gap-1.5">
                             <label class="text-sm font-medium text-gray-900 dark:text-gray-200"
                                 for="apellidos">Apellidos</label>
                             <input
+                                formControlName="apellidos"
                                 class="bg-gray-50 border border-border-light text-gray-900 sm:text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5 placeholder-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
+                                [class.border-red-500]="f['apellidos'].touched && f['apellidos'].errors"
                                 id="apellidos" placeholder="Pérez" type="text" />
+                            <span *ngIf="f['apellidos'].touched && f['apellidos'].errors?.['required']" class="text-xs text-red-600">Los apellidos son requeridos</span>
+                            <span *ngIf="f['apellidos'].touched && f['apellidos'].errors?.['minlength']" class="text-xs text-red-600">Mínimo 2 caracteres</span>
                         </div>
                     </div>
                     <!-- Cédula -->
                     <div class="flex flex-col gap-1.5">
                         <label class="text-sm font-medium text-gray-900 dark:text-gray-200" for="cedula">Cédula</label>
                         <input
+                            formControlName="cedula"
                             class="bg-gray-50 border border-border-light text-gray-900 sm:text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5 placeholder-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
+                            [class.border-red-500]="f['cedula'].touched && f['cedula'].errors"
                             id="cedula" placeholder="1234567890" type="text" />
+                        <span *ngIf="f['cedula'].touched && f['cedula'].errors?.['required']" class="text-xs text-red-600">La cédula es requerida</span>
+                        <span *ngIf="f['cedula'].touched && f['cedula'].errors?.['pattern']" class="text-xs text-red-600">Debe contener 10 dígitos</span>
                     </div>
                     <!-- Email -->
                     <div class="flex flex-col gap-1.5">
@@ -45,9 +57,13 @@
                                 <span class="material-symbols-outlined" style="font-size: 20px;">mail</span>
                             </div>
                             <input
+                                formControlName="correo"
                                 class="bg-gray-50 border border-border-light text-gray-900 sm:text-sm rounded-lg focus:ring-primary focus:border-primary block w-full pl-10 p-2.5 placeholder-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
+                                [class.border-red-500]="f['correo'].touched && f['correo'].errors"
                                 id="email" placeholder="name@company.com" type="email" />
                         </div>
+                        <span *ngIf="f['correo'].touched && f['correo'].errors?.['required']" class="text-xs text-red-600">El correo es requerido</span>
+                        <span *ngIf="f['correo'].touched && f['correo'].errors?.['email']" class="text-xs text-red-600">Formato de correo inválido</span>
                     </div>
                     <!-- Password -->
                     <div class="flex flex-col gap-1.5">
@@ -58,9 +74,13 @@
                                 <span class="material-symbols-outlined" style="font-size: 20px;">lock</span>
                             </div>
                             <input
+                                formControlName="password"
                                 class="bg-gray-50 border border-border-light text-gray-900 sm:text-sm rounded-lg focus:ring-primary focus:border-primary block w-full pl-10 p-2.5 placeholder-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
+                                [class.border-red-500]="f['password'].touched && f['password'].errors"
                                 id="password" placeholder="••••••••" type="password" />
                         </div>
+                        <span *ngIf="f['password'].touched && f['password'].errors?.['required']" class="text-xs text-red-600">La contraseña es requerida</span>
+                        <span *ngIf="f['password'].touched && f['password'].errors?.['minlength']" class="text-xs text-red-600">Mínimo 3 caracteres</span>
                     </div>
                     <!-- Confirm Password -->
                     <div class="flex flex-col gap-1.5">
@@ -71,10 +91,27 @@
                                 <span class="material-symbols-outlined" style="font-size: 20px;">lock</span>
                             </div>
                             <input
+                                formControlName="confirmPassword"
                                 class="bg-gray-50 border border-border-light text-gray-900 sm:text-sm rounded-lg focus:ring-primary focus:border-primary block w-full pl-10 p-2.5 placeholder-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-colors"
+                                [class.border-red-500]="f['confirmPassword'].touched && (f['confirmPassword'].errors || registerForm.errors?.['passwordMismatch'])"
                                 id="confirm-password" placeholder="••••••••" type="password" />
                         </div>
+                        <span *ngIf="f['confirmPassword'].touched && f['confirmPassword'].errors?.['required']" class="text-xs text-red-600">Confirma tu contraseña</span>
+                        <span *ngIf="registerForm.errors?.['passwordMismatch'] && f['confirmPassword'].touched" class="text-xs text-red-600">Las contraseñas no coinciden</span>
                     </div>
+
+                    <!-- Rol Selection -->
+                    <div>
+                        <label for="rol" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rol</label>
+                        <select 
+                            formControlName="rol"
+                            id="rol"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 hover:bg-gray-100 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:hover:bg-gray-600 cursor-pointer">
+                            <option [value]="roles.ADMIN">Administrador</option>
+                            <option [value]="roles.VENDEDOR">Vendedor</option>
+                        </select>
+                    </div>
+
                     <!-- Terms Checkbox -->
                     <!-- <div class="flex items-start pt-2">
                         <div class="flex h-5 items-center">
