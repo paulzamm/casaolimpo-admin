@@ -32,7 +32,7 @@
                         </svg>
                     </div>
                 </div>
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Ventas Hoy</p>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Ventas Hoy @if (!authService.isAdmin()) { <span class="text-xs">(Mis ventas)</span> }</p>
                 <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ dashboard()!.ventas_hoy }}</p>
                 <p class="text-sm font-semibold text-blue-600 dark:text-blue-400 mt-2">{{ formatPrice(dashboard()!.total_vendido_hoy) }}</p>
             </div>
@@ -46,9 +46,20 @@
                         </svg>
                     </div>
                 </div>
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Ventas del Mes</p>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    @if (authService.isAdmin()) {
+                    Ventas del Mes (Todas)
+                    } @else {
+                    Mis Ventas del Mes
+                    }
+                </p>
+                @if (authService.isAdmin()) {
                 <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ dashboard()!.ventas_mes }}</p>
                 <p class="text-sm font-semibold text-green-600 dark:text-green-400 mt-2">{{ formatPrice(dashboard()!.total_vendido_mes) }}</p>
+                } @else {
+                <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ dashboard()!.vendedor_stats?.mis_ventas_mes || 0 }}</p>
+                <p class="text-sm font-semibold text-green-600 dark:text-green-400 mt-2">{{ formatPrice(dashboard()!.vendedor_stats?.mi_total_mes || 0) }}</p>
+                }
             </div>
 
             <!-- Total Clientes -->
@@ -150,6 +161,40 @@
                             </div>
                             <div class="text-right">
                                 <p class="text-sm font-bold text-gray-900 dark:text-white">{{ formatPrice(seller.total_monto) }}</p>
+                            </div>
+                        </div>
+                        }
+                    </div>
+                    }
+                </div>
+            </div>
+            }
+            
+            <!-- Mis Clientes (solo vendedor) -->
+            @if (!authService.isAdmin() && dashboard()!.vendedor_stats) {
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Mis Mejores Clientes</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Top 5 del mes</p>
+                </div>
+                <div class="p-4">
+                    @if (dashboard()!.vendedor_stats!.top_clientes.length === 0) {
+                    <p class="text-center text-gray-500 dark:text-gray-400 py-8">No hay datos disponibles</p>
+                    } @else {
+                    <div class="space-y-3">
+                        @for (client of dashboard()!.vendedor_stats!.top_clientes; track client.cliente_id; let idx = $index) {
+                        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200">
+                            <div class="flex items-center space-x-3">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-green-700 text-white font-bold text-sm shadow-md">
+                                    {{ getInitials(client.nombre) }}
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ client.nombre }}</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ client.total_ventas }} compras</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-bold text-gray-900 dark:text-white">{{ formatPrice(client.total_monto) }}</p>
                             </div>
                         </div>
                         }

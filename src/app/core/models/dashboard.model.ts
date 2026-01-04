@@ -14,6 +14,19 @@ export interface TopSeller {
     total_monto: number;
 }
 
+export interface TopClient {
+    cliente_id: string;
+    nombre: string;
+    total_ventas: number;
+    total_monto: number;
+}
+
+export interface VendedorStats {
+    mis_ventas_mes: number;
+    mi_total_mes: number;
+    top_clientes: TopClient[];
+}
+
 export interface DashboardData {
     ventas_hoy: number;
     ventas_mes: number;
@@ -23,4 +36,5 @@ export interface DashboardData {
     productos_bajo_stock: number;
     top_productos: TopProduct[];
     top_vendedores: TopSeller[];
+    vendedor_stats?: VendedorStats;
 }
