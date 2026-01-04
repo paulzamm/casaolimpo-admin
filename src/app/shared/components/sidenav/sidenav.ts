@@ -49,8 +49,8 @@ export class Sidenav {
       roles: [Role.ADMIN, Role.VENDEDOR],
       isOpen: false,
       children: [
-        { label: 'Nueva Venta', route: '/pages/sales/create', roles: [Role.ADMIN, Role.VENDEDOR], icon: '' },
-        { label: 'Historial', route: '/pages/sales/history', roles: [Role.ADMIN], icon: '' },
+        { label: 'Punto de Venta', route: '/pages/sales/pos', roles: [Role.ADMIN, Role.VENDEDOR], icon: '' },
+        { label: 'Historial', route: '/pages/sales/history', roles: [Role.ADMIN, Role.VENDEDOR], icon: '' },
       ]
     },
     {

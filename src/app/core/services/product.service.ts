@@ -16,12 +16,13 @@ export class ProductService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/api/admin/products`;
 
-  getAll(params?: { search?: string; category?: string; brand?: string; skip?: number; limit?: number }): Observable<PaginatedResponse<Product>> {
+  getAll(params?: { search?: string; category?: string; brand?: string; stock_status?: string; skip?: number; limit?: number }): Observable<PaginatedResponse<Product>> {
     let httpParams = new HttpParams();
     
     if (params?.search) httpParams = httpParams.set('search', params.search);
     if (params?.category) httpParams = httpParams.set('category', params.category);
     if (params?.brand) httpParams = httpParams.set('brand', params.brand);
+    if (params?.stock_status) httpParams = httpParams.set('stock_status', params.stock_status);
     if (params?.skip !== undefined) httpParams = httpParams.set('skip', params.skip.toString());
     if (params?.limit !== undefined) httpParams = httpParams.set('limit', params.limit.toString());
 

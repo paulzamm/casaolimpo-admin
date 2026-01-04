@@ -117,6 +117,7 @@ export class Products implements OnInit {
       search: this.searchTerm || undefined,
       category: this.selectedCategory || undefined,
       brand: this.selectedBrand || undefined,
+      stock_status: this.selectedStockStatus || undefined,
       skip,
       limit: this.itemsPerPage
     }).subscribe({
@@ -150,33 +151,9 @@ export class Products implements OnInit {
   }
 
   applyStockFilter(): void {
-    let filtered = [...this.products];
-    
-    // Filtro de stock status (solo para filtrado local)
-    if (this.selectedStockStatus) {
-      filtered = filtered.filter(p => {
-        if (this.selectedStockStatus === 'in-stock') return p.stock > 10;
-        if (this.selectedStockStatus === 'low-stock') return p.stock > 0 && p.stock <= 10;
-        if (this.selectedStockStatus === 'out-of-stock') return p.stock === 0;
-        return true;
-      });
-    }
-    
-    this.filteredProducts = filtered;
-    // Calcular totalPages basado en totalItems del servidor si no hay filtro de stock
-    if (!this.selectedStockStatus) {
-      this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
-    } else {
-      // Si hay filtro de stock local, usar filteredProducts length
-      this.totalPages = Math.ceil(this.filteredProducts.length / this.itemsPerPage);
-    }
-    // Calcular totalPages basado en totalItems del servidor si no hay filtro de stock
-    if (!this.selectedStockStatus) {
-      this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
-    } else {
-      // Si hay filtro de stock local, usar filteredProducts length
-      this.totalPages = Math.ceil(this.filteredProducts.length / this.itemsPerPage);
-    }
+    // Ya no es necesario filtrar localmente, el servidor lo hace
+    this.filteredProducts = this.products;
+    this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
   }
 
   onSearchChange(event: Event): void {
@@ -199,18 +176,13 @@ export class Products implements OnInit {
 
   onStockStatusChange(event: Event): void {
     this.selectedStockStatus = (event.target as HTMLSelectElement).value;
-    this.applyStockFilter();
+    this.currentPage = 1;
+    this.loadProducts();
   }
 
   getPaginatedProducts(): Product[] {
-    // Si no hay filtro de stock, mostrar directamente los productos del servidor
-    if (!this.selectedStockStatus) {
-      return this.products;
-    }
-    // Si hay filtro de stock, paginar localmente
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    const end = start + this.itemsPerPage;
-    return this.filteredProducts.slice(start, end);
+    // Todos los filtros se aplican en el servidor, solo retornamos los productos
+    return this.products;
   }
 
   getStockStatus(stock: number): { text: string; class: string } {
