@@ -1,1 +1,165 @@
-<p>dashboard works!</p>
+<section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 min-h-screen antialiased">
+    <div class="mx-auto max-w-screen-2xl px-4 lg:px-12">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 mb-6">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Resumen general de tu negocio</p>
+            </div>
+            <button (click)="goToNewSale()"
+                class="cursor-pointer flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800 transition-colors duration-200">
+                <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+                Nueva Venta
+            </button>
+        </div>
+
+        @if (isLoading()) {
+        <div class="flex justify-center items-center py-20">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-700"></div>
+        </div>
+        } @else if (dashboard()) {
+        
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <!-- Ventas Hoy -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900">
+                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Ventas Hoy</p>
+                <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ dashboard()!.ventas_hoy }}</p>
+                <p class="text-sm font-semibold text-blue-600 dark:text-blue-400 mt-2">{{ formatPrice(dashboard()!.total_vendido_hoy) }}</p>
+            </div>
+
+            <!-- Ventas del Mes -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full bg-green-100 dark:bg-green-900">
+                        <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Ventas del Mes</p>
+                <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ dashboard()!.ventas_mes }}</p>
+                <p class="text-sm font-semibold text-green-600 dark:text-green-400 mt-2">{{ formatPrice(dashboard()!.total_vendido_mes) }}</p>
+            </div>
+
+            <!-- Total Clientes -->
+            <div (click)="goToClients()" class="cursor-pointer bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-200">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900">
+                        <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Clientes</p>
+                <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ dashboard()!.total_clientes }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Click para ver todos</p>
+            </div>
+
+            <!-- Stock Bajo -->
+            <div (click)="goToInventory()" class="cursor-pointer bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-200">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full bg-red-100 dark:bg-red-900">
+                        <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Stock Bajo</p>
+                <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ dashboard()!.productos_bajo_stock }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Productos con menos de 10 unidades</p>
+            </div>
+        </div>
+
+        <!-- Tables Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Top Productos -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Productos Más Vendidos</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Top 5 del mes</p>
+                </div>
+                <div class="p-4">
+                    @if (dashboard()!.top_productos.length === 0) {
+                    <p class="text-center text-gray-500 dark:text-gray-400 py-8">No hay datos disponibles</p>
+                    } @else {
+                    <div class="space-y-3">
+                        @for (product of dashboard()!.top_productos; track product.product_id; let idx = $index) {
+                        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200">
+                            <div class="flex items-center space-x-3 flex-1">
+                                <div class="flex-shrink-0">
+                                    @if (product.imagen) {
+                                    <img [src]="product.imagen" [alt]="product.nombre" class="w-12 h-12 rounded-lg object-cover" />
+                                    } @else {
+                                    <div class="w-12 h-12 bg-gray-200 dark:bg-gray-600 rounded-lg flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                                        </svg>
+                                    </div>
+                                    }
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ product.nombre }}</p>
+                                    @if (product.categoria) {
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ product.categoria }}</p>
+                                    }
+                                </div>
+                            </div>
+                            <div class="text-right ml-3 flex-shrink-0">
+                                <p class="text-sm font-bold text-gray-900 dark:text-white">{{ product.total_vendido }} uds</p>
+                                <p class="text-xs font-semibold text-green-600 dark:text-green-400">{{ formatPrice(product.total_monto) }}</p>
+                            </div>
+                        </div>
+                        }
+                    </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Top Vendedores (solo admin) -->
+            @if (authService.isAdmin()) {
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Ventas por Vendedor</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Top 5 del mes</p>
+                </div>
+                <div class="p-4">
+                    @if (dashboard()!.top_vendedores.length === 0) {
+                    <p class="text-center text-gray-500 dark:text-gray-400 py-8">No hay datos disponibles</p>
+                    } @else {
+                    <div class="space-y-3">
+                        @for (seller of dashboard()!.top_vendedores; track seller.usuario_id; let idx = $index) {
+                        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200">
+                            <div class="flex items-center space-x-3">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 text-white font-bold text-sm shadow-md">
+                                    {{ getInitials(seller.nombre) }}
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ seller.nombre }}</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ seller.total_ventas }} ventas</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-bold text-gray-900 dark:text-white">{{ formatPrice(seller.total_monto) }}</p>
+                            </div>
+                        </div>
+                        }
+                    </div>
+                    }
+                </div>
+            </div>
+            }
+        </div>
+        }
+    </div>
+</section>
+
