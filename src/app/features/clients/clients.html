@@ -1,1 +1,386 @@
-<p>clients works!</p>
+<section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
+    <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
+        <!-- Start coding here -->
+        <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+            <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
+                <div class="w-full md:w-1/2">
+                    <h1 class="text-xl font-semibold text-gray-900 dark:text-white">Clientes</h1>
+                </div>
+                <div
+                    class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+                    @if (authService.isAdmin()) {
+                    <button type="button" (click)="openCreateModal()"
+                        class="cursor-pointer flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+                        <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path clip-rule="evenodd" fill-rule="evenodd"
+                                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                        </svg>
+                        Agregar Cliente
+                    </button>
+                    }
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="px-4 pb-4">
+                <!-- Búsqueda -->
+                <div>
+                    <label for="table-search" class="sr-only">Buscar</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
+                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <input type="text" id="table-search" (input)="onSearchChange($event)" [value]="searchTerm"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            placeholder="Buscar clientes..." />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-4 py-3">Cliente</th>
+                            <th scope="col" class="px-4 py-3">Cédula</th>
+                            <th scope="col" class="px-4 py-3">Contacto</th>
+                            <th scope="col" class="px-4 py-3">Dirección</th>
+                            <th scope="col" class="px-4 py-3">Ciudad</th>
+                            <th scope="col" class="px-4 py-3">
+                                <span class="sr-only">Actions</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (isLoading) {
+                        <tr>
+                            <td colspan="6" class="px-4 py-8 text-center">
+                                <div class="flex justify-center items-center">
+                                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-700"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        } @else if (getClients().length === 0) {
+                        <tr>
+                            <td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                                No se encontraron clientes
+                            </td>
+                        </tr>
+                        } @else {
+                        @for (client of getClients(); track client._id) {
+                        <tr class="border-b border-gray-200 dark:border-gray-700">
+                            <th scope="row"
+                                class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 w-10 h-10 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center text-primary-700 dark:text-primary-300 font-bold">
+                                        {{ client.nombres.charAt(0) }}{{ client.apellidos.charAt(0) }}
+                                    </div>
+                                    <div class="ml-3">
+                                        <div class="font-semibold">{{ getClientFullName(client) }}</div>
+                                    </div>
+                                </div>
+                            </th>
+                            <td class="px-4 py-3">
+                                {{ client.cedula }}
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex flex-col">
+                                    @if (client.correo) {
+                                    <span class="text-sm text-gray-900 dark:text-white">{{ client.correo }}</span>
+                                    }
+                                    @if (client.telefono) {
+                                    <span class="text-sm text-gray-500 dark:text-gray-400">{{ client.telefono }}</span>
+                                    }
+                                    @if (!client.correo && !client.telefono) {
+                                    <span class="text-sm text-gray-400 dark:text-gray-500">Sin contacto</span>
+                                    }
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 text-gray-500 dark:text-gray-400">
+                                {{ client.direccion || '-' }}
+                            </td>
+                            <td class="px-4 py-3 text-gray-500 dark:text-gray-400">
+                                {{ client.ciudad || '-' }}
+                            </td>
+                            <td class="px-4 py-3 flex items-center justify-end gap-2">
+                                @if (authService.isAdmin()) {
+                                <button (click)="openEditModal(client)"
+                                    class="cursor-pointer inline-flex items-center p-2 text-sm font-medium text-center text-gray-600 hover:text-primary-700 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-primary-500"
+                                    type="button">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z">
+                                        </path>
+                                        <path fill-rule="evenodd"
+                                            d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </button>
+                                <button (click)="deleteClient(client._id!)"
+                                    class="cursor-pointer inline-flex items-center p-2 text-sm font-medium text-center text-red-600 hover:text-red-700 rounded-lg focus:outline-none dark:text-red-500 dark:hover:text-red-600"
+                                    type="button">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </button>
+                                }
+                            </td>
+                        </tr>
+                        }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <nav class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4"
+                aria-label="Table navigation">
+                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                    Mostrando
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ (currentPage - 1) * itemsPerPage + 1
+                        }}-{{ Math.min(currentPage * itemsPerPage, totalItems) }}</span>
+                    de
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ totalItems }}</span>
+                </span>
+                <ul class="inline-flex items-stretch -space-x-px">
+                    <li>
+                        <button (click)="previousPage()" [disabled]="currentPage === 1"
+                            class="cursor-pointer flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span class="sr-only">Previous</span>
+                            <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </li>
+                    @for (page of getPageNumbers(); track page) {
+                    <li>
+                        <button (click)="goToPage(page)" 
+                            [ngClass]="currentPage === page ? 
+                                'bg-primary-700 text-white border-primary-700 dark:bg-primary-600 dark:border-primary-600' : 
+                                'text-gray-500 bg-white border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'"
+                            class="cursor-pointer flex items-center justify-center text-sm py-2 px-3 leading-tight border">
+                            {{ page }}
+                        </button>
+                    </li>
+                    }
+                    <li>
+                        <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+                            class="cursor-pointer flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span class="sr-only">Next</span>
+                            <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<!-- Modal Crear/Editar Cliente -->
+<div id="clientModal" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
+    <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+            <!-- Modal header -->
+            <div
+                class="flex justify-between items-center pb-4 mb-4 rounded-t border-b border-gray-200 sm:mb-5 dark:border-gray-600">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    {{ isEditMode ? 'Editar Cliente' : 'Agregar Cliente' }}
+                </h3>
+                <button type="button" (click)="closeModal()"
+                    class="cursor-pointer text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <form [formGroup]="clientForm" (ngSubmit)="onSubmit()">
+                <div class="grid gap-4 mb-4 sm:grid-cols-2">
+                    <!-- Cédula -->
+                    <div>
+                        <label for="cedula" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Cédula <span class="text-red-600">*</span>
+                        </label>
+                        <input type="text" formControlName="cedula" id="cedula"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            [class.border-red-500]="clientForm.get('cedula')?.invalid && clientForm.get('cedula')?.touched"
+                            placeholder="Ej: 1234567890">
+                        @if (clientForm.get('cedula')?.invalid && clientForm.get('cedula')?.touched) {
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                            @if (clientForm.get('cedula')?.errors?.['required']) {
+                            La cédula es requerida
+                            }
+                            @if (clientForm.get('cedula')?.errors?.['minlength'] || clientForm.get('cedula')?.errors?.['maxlength']) {
+                            La cédula debe tener entre 10 y 13 dígitos
+                            }
+                        </p>
+                        }
+                    </div>
+
+                    <!-- Teléfono -->
+                    <div>
+                        <label for="telefono" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Teléfono
+                        </label>
+                        <input type="tel" formControlName="telefono" id="telefono"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            [class.border-red-500]="clientForm.get('telefono')?.invalid && clientForm.get('telefono')?.touched"
+                            placeholder="Ej: 0987654321">
+                        @if (clientForm.get('telefono')?.invalid && clientForm.get('telefono')?.touched) {
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                            El teléfono debe tener 10 dígitos
+                        </p>
+                        }
+                    </div>
+
+                    <!-- Nombres -->
+                    <div>
+                        <label for="nombres" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Nombres <span class="text-red-600">*</span>
+                        </label>
+                        <input type="text" formControlName="nombres" id="nombres"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            [class.border-red-500]="clientForm.get('nombres')?.invalid && clientForm.get('nombres')?.touched"
+                            placeholder="Ej: Juan Carlos">
+                        @if (clientForm.get('nombres')?.invalid && clientForm.get('nombres')?.touched) {
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                            @if (clientForm.get('nombres')?.errors?.['required']) {
+                            Los nombres son requeridos
+                            }
+                            @if (clientForm.get('nombres')?.errors?.['minlength']) {
+                            Los nombres deben tener al menos 2 caracteres
+                            }
+                        </p>
+                        }
+                    </div>
+
+                    <!-- Apellidos -->
+                    <div>
+                        <label for="apellidos" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Apellidos <span class="text-red-600">*</span>
+                        </label>
+                        <input type="text" formControlName="apellidos" id="apellidos"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            [class.border-red-500]="clientForm.get('apellidos')?.invalid && clientForm.get('apellidos')?.touched"
+                            placeholder="Ej: Pérez López">
+                        @if (clientForm.get('apellidos')?.invalid && clientForm.get('apellidos')?.touched) {
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                            @if (clientForm.get('apellidos')?.errors?.['required']) {
+                            Los apellidos son requeridos
+                            }
+                            @if (clientForm.get('apellidos')?.errors?.['minlength']) {
+                            Los apellidos deben tener al menos 2 caracteres
+                            }
+                        </p>
+                        }
+                    </div>
+
+                    <!-- Correo -->
+                    <div class="sm:col-span-2">
+                        <label for="correo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Correo Electrónico
+                        </label>
+                        <input type="email" formControlName="correo" id="correo"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            [class.border-red-500]="clientForm.get('correo')?.invalid && clientForm.get('correo')?.touched"
+                            placeholder="Ej: cliente@ejemplo.com">
+                        @if (clientForm.get('correo')?.invalid && clientForm.get('correo')?.touched) {
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                            Ingrese un correo electrónico válido
+                        </p>
+                        }
+                    </div>
+
+                    <!-- Dirección -->
+                    <div class="sm:col-span-2">
+                        <label for="direccion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Dirección
+                        </label>
+                        <input type="text" formControlName="direccion" id="direccion"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            placeholder="Ej: Av. Principal 123 y Secundaria">
+                    </div>
+
+                    <!-- Ciudad -->
+                    <div class="sm:col-span-2">
+                        <label for="ciudad" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Ciudad
+                        </label>
+                        <input type="text" formControlName="ciudad" id="ciudad"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            placeholder="Ej: Quito">
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button type="submit"
+                        class="cursor-pointer text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                        {{ isEditMode ? 'Actualizar' : 'Crear' }}
+                    </button>
+                    <button type="button" (click)="closeModal()"
+                        class="cursor-pointer text-red-600 inline-flex items-center hover:text-white border border-red-600 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Confirmación Delete -->
+<div id="deleteClientModal" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
+    <div class="relative p-4 w-full max-w-md h-full md:h-auto">
+        <div class="relative p-4 text-center bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+            <button type="button" (click)="closeDeleteModal()"
+                class="cursor-pointer text-gray-400 absolute top-2.5 right-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <svg class="text-gray-400 dark:text-gray-500 w-11 h-11 mb-3.5 mx-auto" aria-hidden="true"
+                fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                    clip-rule="evenodd"></path>
+            </svg>
+            <p class="mb-4 text-gray-500 dark:text-gray-300">¿Está seguro que desea eliminar este cliente?</p>
+            <div class="flex justify-center items-center space-x-4">
+                <button type="button" (click)="closeDeleteModal()"
+                    class="cursor-pointer py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
+                    Cancelar
+                </button>
+                <button type="button" (click)="confirmDelete()"
+                    class="cursor-pointer py-2 px-3 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900">
+                    Sí, eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

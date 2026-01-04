@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { toast } from 'ngx-sonner';
 import { BrandService } from '../../../core/services/brand.service';
 import { Brand } from '../../../core/models/brand.model';
+import { AuthService } from '../../../core/services/auth.service';
 
 declare const Modal: any;
 
@@ -18,6 +19,7 @@ export class Brands implements OnInit {
   private brandService = inject(BrandService);
   private fb = inject(FormBuilder);
   private cdr = inject(ChangeDetectorRef);
+  public authService = inject(AuthService);
 
   Math = Math; // Para usar en template
   brands: Brand[] = [];

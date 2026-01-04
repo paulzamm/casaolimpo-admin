@@ -6,6 +6,7 @@ import { toast } from 'ngx-sonner';
 import { ProductService } from '../../../core/services/product.service';
 import { CategoryService } from '../../../core/services/category.service';
 import { BrandService } from '../../../core/services/brand.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { Product } from '../../../core/models/product.model';
 import { Category } from '../../../core/models/category.model';
 import { Brand } from '../../../core/models/brand.model';
@@ -24,6 +25,7 @@ export class Products implements OnInit {
   private productService = inject(ProductService);
   private categoryService = inject(CategoryService);
   private brandService = inject(BrandService);
+  authService = inject(AuthService); // Public para usar en template
   private fb = inject(FormBuilder);
   private cdr = inject(ChangeDetectorRef);
   private http = inject(HttpClient);

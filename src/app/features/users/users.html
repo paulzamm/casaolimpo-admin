@@ -1,1 +1,427 @@
-<p>users works!</p>
+<section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
+    <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
+        <!-- Start coding here -->
+        <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+            <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
+                <div class="w-full md:w-1/2">
+                    <h1 class="text-xl font-semibold text-gray-900 dark:text-white">Usuarios</h1>
+                </div>
+                <div
+                    class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+                    @if (authService.isAdmin()) {
+                    <button type="button" (click)="openCreateModal()"
+                        class="cursor-pointer flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+                        <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path clip-rule="evenodd" fill-rule="evenodd"
+                                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                        </svg>
+                        Agregar Usuario
+                    </button>
+                    }
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="px-4 pb-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Búsqueda -->
+                <div>
+                    <label for="table-search" class="sr-only">Buscar</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
+                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <input type="text" id="table-search" (input)="onSearchChange($event)" [value]="searchTerm"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            placeholder="Buscar usuarios..." />
+                    </div>
+                </div>
+
+                <!-- Filtro Rol -->
+                <div>
+                    <select (change)="onRoleChange($event)" [value]="selectedRole"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                        <option value="">Todos los roles</option>
+                        <option value="ADMIN">Admin</option>
+                        <option value="VENDEDOR">Vendedor</option>
+                    </select>
+                </div>
+
+                <!-- Filtro Estado -->
+                <div>
+                    <select (change)="onStatusChange($event)" [value]="selectedStatus"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                        <option value="">Todos los estados</option>
+                        <option value="active">Activo</option>
+                        <option value="inactive">Inactivo</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Tabla -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-4 py-3">Usuario</th>
+                            <th scope="col" class="px-4 py-3">Rol</th>
+                            <th scope="col" class="px-4 py-3">Estado</th>
+                            <th scope="col" class="px-4 py-3">Cédula</th>
+                            <th scope="col" class="px-4 py-3">
+                                <span class="sr-only">Actions</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (isLoading) {
+                        <tr>
+                            <td colspan="5" class="px-4 py-8 text-center">
+                                <div class="flex justify-center items-center">
+                                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-700"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        } @else if (getUsers().length === 0) {
+                        <tr>
+                            <td colspan="5" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                                No se encontraron usuarios
+                            </td>
+                        </tr>
+                        } @else {
+                        @for (user of getUsers(); track user._id) {
+                        <tr class="border-b border-gray-200 dark:border-gray-700">
+                            <th scope="row"
+                                class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 w-10 h-10 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center text-primary-700 dark:text-primary-300 font-bold">
+                                        {{ user.nombres.charAt(0) }}{{ user.apellidos.charAt(0) }}
+                                    </div>
+                                    <div class="ml-3">
+                                        <div class="font-semibold">{{ getUserFullName(user) }}</div>
+                                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ user.correo }}</div>
+                                    </div>
+                                </div>
+                            </th>
+                            <td class="px-4 py-3">
+                                <span [class]="'inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ' + getRoleBadgeClass(user.rol)">
+                                    {{ getRoleLabel(user.rol) }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center">
+                                    @if (user.activo) {
+                                    <div class="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
+                                    <span class="text-gray-900 dark:text-white">Activo</span>
+                                    } @else {
+                                    <div class="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>
+                                    <span class="text-gray-500 dark:text-gray-400">Inactivo</span>
+                                    }
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 text-gray-500 dark:text-gray-400">
+                                {{ user.cedula }}
+                            </td>
+                            <td class="px-4 py-3 flex items-center justify-end gap-2">
+                                @if (authService.isAdmin()) {
+                                <!-- Botón Toggle Estado -->
+                                <button (click)="toggleUserStatus(user)"
+                                    [title]="user.activo ? 'Desactivar usuario' : 'Activar usuario'"
+                                    class="cursor-pointer inline-flex items-center p-2 text-sm font-medium text-center rounded-lg focus:outline-none"
+                                    [class.text-green-600]="!user.activo"
+                                    [class.hover:text-green-700]="!user.activo"
+                                    [class.dark:text-green-500]="!user.activo"
+                                    [class.dark:hover:text-green-600]="!user.activo"
+                                    [class.text-gray-600]="user.activo"
+                                    [class.hover:text-gray-700]="user.activo"
+                                    [class.dark:text-gray-400]="user.activo"
+                                    [class.dark:hover:text-gray-500]="user.activo"
+                                    type="button">
+                                    @if (user.activo) {
+                                    <!-- Icono desactivar -->
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                                    </svg>
+                                    } @else {
+                                    <!-- Icono activar -->
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    }
+                                </button>
+                                
+                                <!-- Botón Editar -->
+                                <button (click)="openEditModal(user)"
+                                    class="cursor-pointer inline-flex items-center p-2 text-sm font-medium text-center text-gray-600 hover:text-primary-700 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-primary-500"
+                                    type="button">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z">
+                                        </path>
+                                        <path fill-rule="evenodd"
+                                            d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </button>
+                                
+                                <!-- Botón Eliminar -->
+                                <button (click)="deleteUser(user._id!)"
+                                    class="cursor-pointer inline-flex items-center p-2 text-sm font-medium text-center text-red-600 hover:text-red-700 rounded-lg focus:outline-none dark:text-red-500 dark:hover:text-red-600"
+                                    type="button">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </button>
+                                }
+                            </td>
+                        </tr>
+                        }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <nav class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4"
+                aria-label="Table navigation">
+                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                    Mostrando
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ (currentPage - 1) * itemsPerPage + 1
+                        }}-{{ Math.min(currentPage * itemsPerPage, totalItems) }}</span>
+                    de
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ totalItems }}</span>
+                </span>
+                <ul class="inline-flex items-stretch -space-x-px">
+                    <li>
+                        <button (click)="previousPage()" [disabled]="currentPage === 1"
+                            class="cursor-pointer flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span class="sr-only">Previous</span>
+                            <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </li>
+                    @for (page of getPageNumbers(); track page) {
+                    <li>
+                        <button (click)="goToPage(page)" 
+                            [ngClass]="currentPage === page ? 
+                                'bg-primary-700 text-white border-primary-700 dark:bg-primary-600 dark:border-primary-600' : 
+                                'text-gray-500 bg-white border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'"
+                            class="cursor-pointer flex items-center justify-center text-sm py-2 px-3 leading-tight border">
+                            {{ page }}
+                        </button>
+                    </li>
+                    }
+                    <li>
+                        <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+                            class="cursor-pointer flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span class="sr-only">Next</span>
+                            <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<!-- Modal Crear/Editar Usuario -->
+<div id="userModal" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
+    <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+            <!-- Modal header -->
+            <div
+                class="flex justify-between items-center pb-4 mb-4 rounded-t border-b border-gray-200 sm:mb-5 dark:border-gray-600">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    {{ isEditMode ? 'Editar Usuario' : 'Agregar Usuario' }}
+                </h3>
+                <button type="button" (click)="closeModal()"
+                    class="cursor-pointer text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+                <div class="grid gap-4 mb-4 sm:grid-cols-2">
+                    <!-- Cédula -->
+                    <div>
+                        <label for="cedula" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Cédula <span class="text-red-600">*</span>
+                        </label>
+                        <input type="text" formControlName="cedula" id="cedula"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            [class.border-red-500]="userForm.get('cedula')?.invalid && userForm.get('cedula')?.touched"
+                            placeholder="Ej: 1234567890">
+                        @if (userForm.get('cedula')?.invalid && userForm.get('cedula')?.touched) {
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                            La cédula debe tener entre 10 y 13 dígitos
+                        </p>
+                        }
+                    </div>
+
+                    <!-- Rol -->
+                    <div>
+                        <label for="rol" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Rol <span class="text-red-600">*</span>
+                        </label>
+                        <select formControlName="rol" id="rol"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            [class.border-red-500]="userForm.get('rol')?.invalid && userForm.get('rol')?.touched">
+                            <option value="">Seleccione un rol</option>
+                            <option [value]="Role.ADMIN">Admin</option>
+                            <option [value]="Role.VENDEDOR">Vendedor</option>
+                        </select>
+                        @if (userForm.get('rol')?.invalid && userForm.get('rol')?.touched) {
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                            El rol es requerido
+                        </p>
+                        }
+                    </div>
+
+                    <!-- Nombres -->
+                    <div>
+                        <label for="nombres" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Nombres <span class="text-red-600">*</span>
+                        </label>
+                        <input type="text" formControlName="nombres" id="nombres"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            [class.border-red-500]="userForm.get('nombres')?.invalid && userForm.get('nombres')?.touched"
+                            placeholder="Ej: Juan Carlos">
+                        @if (userForm.get('nombres')?.invalid && userForm.get('nombres')?.touched) {
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                            Los nombres deben tener al menos 2 caracteres
+                        </p>
+                        }
+                    </div>
+
+                    <!-- Apellidos -->
+                    <div>
+                        <label for="apellidos" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Apellidos <span class="text-red-600">*</span>
+                        </label>
+                        <input type="text" formControlName="apellidos" id="apellidos"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            [class.border-red-500]="userForm.get('apellidos')?.invalid && userForm.get('apellidos')?.touched"
+                            placeholder="Ej: Pérez López">
+                        @if (userForm.get('apellidos')?.invalid && userForm.get('apellidos')?.touched) {
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                            Los apellidos deben tener al menos 2 caracteres
+                        </p>
+                        }
+                    </div>
+
+                    <!-- Correo -->
+                    <div class="sm:col-span-2">
+                        <label for="correo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Correo Electrónico <span class="text-red-600">*</span>
+                        </label>
+                        <input type="email" formControlName="correo" id="correo"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            [class.border-red-500]="userForm.get('correo')?.invalid && userForm.get('correo')?.touched"
+                            placeholder="Ej: usuario@ejemplo.com">
+                        @if (userForm.get('correo')?.invalid && userForm.get('correo')?.touched) {
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                            Ingrese un correo electrónico válido
+                        </p>
+                        }
+                    </div>
+
+                    <!-- Contraseña -->
+                    <div class="sm:col-span-2">
+                        <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Contraseña @if (!isEditMode) { <span class="text-red-600">*</span> } @else { <span class="text-gray-500">(dejar en blanco para mantener actual)</span> }
+                        </label>
+                        <input type="password" formControlName="password" id="password"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            [class.border-red-500]="userForm.get('password')?.invalid && userForm.get('password')?.touched"
+                            placeholder="Mínimo 6 caracteres">
+                        @if (userForm.get('password')?.invalid && userForm.get('password')?.touched) {
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+                            La contraseña debe tener al menos 3 caracteres
+                        </p>
+                        }
+                    </div>
+
+                    <!-- Estado (solo visible en edición) -->
+                    @if (isEditMode) {
+                    <div class="sm:col-span-2">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" formControlName="activo" class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                            <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Usuario Activo</span>
+                        </label>
+                    </div>
+                    }
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button type="submit"
+                        class="cursor-pointer text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                        {{ isEditMode ? 'Actualizar' : 'Crear' }}
+                    </button>
+                    <button type="button" (click)="closeModal()"
+                        class="cursor-pointer text-red-600 inline-flex items-center hover:text-white border border-red-600 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Confirmación Delete -->
+<div id="deleteUserModal" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
+    <div class="relative p-4 w-full max-w-md h-full md:h-auto">
+        <div class="relative p-4 text-center bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+            <button type="button" (click)="closeDeleteModal()"
+                class="cursor-pointer text-gray-400 absolute top-2.5 right-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <svg class="text-gray-400 dark:text-gray-500 w-11 h-11 mb-3.5 mx-auto" aria-hidden="true"
+                fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                    clip-rule="evenodd"></path>
+            </svg>
+            <p class="mb-4 text-gray-500 dark:text-gray-300">¿Está seguro que desea eliminar este usuario?</p>
+            <div class="flex justify-center items-center space-x-4">
+                <button type="button" (click)="closeDeleteModal()"
+                    class="cursor-pointer py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
+                    Cancelar
+                </button>
+                <button type="button" (click)="confirmDelete()"
+                    class="cursor-pointer py-2 px-3 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900">
+                    Sí, eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

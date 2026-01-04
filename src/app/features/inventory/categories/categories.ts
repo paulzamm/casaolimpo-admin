@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { toast } from 'ngx-sonner';
 import { CategoryService } from '../../../core/services/category.service';
 import { Category } from '../../../core/models/category.model';
+import { AuthService } from '../../../core/services/auth.service';
 
 declare const Modal: any;
 
@@ -18,6 +19,7 @@ export class Categories implements OnInit {
   private categoryService = inject(CategoryService);
   private fb = inject(FormBuilder);
   private cdr = inject(ChangeDetectorRef);
+  public authService = inject(AuthService);
 
   Math = Math; // Para usar en template
   categories: Category[] = [];
