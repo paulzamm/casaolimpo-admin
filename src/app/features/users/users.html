@@ -356,7 +356,7 @@
                         <input type="password" formControlName="password" id="password"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             [class.border-red-500]="userForm.get('password')?.invalid && userForm.get('password')?.touched"
-                            placeholder="Mínimo 6 caracteres">
+                            placeholder="Mínimo 3 caracteres">
                         @if (userForm.get('password')?.invalid && userForm.get('password')?.touched) {
                         <p class="mt-2 text-sm text-red-600 dark:text-red-500">
                             La contraseña debe tener al menos 3 caracteres

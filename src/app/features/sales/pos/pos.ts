@@ -31,6 +31,7 @@ export class Pos implements OnInit {
   private router = inject(Router);
 
   confirmModal: any;
+  newClientModal: any;
 
   // Estados
   products = signal<Product[]>([]);
@@ -40,6 +41,18 @@ export class Pos implements OnInit {
   cart = signal<CartItem[]>([]);
   isLoading = signal(false);
   isProcessing = signal(false);
+  isSavingClient = signal(false);
+
+  // Nuevo Cliente Form
+  newClient = signal<Partial<Client>>({
+    cedula: '',
+    nombres: '',
+    apellidos: '',
+    telefono: '',
+    correo: '',
+    direccion: '',
+    ciudad: ''
+  });
 
   // Filtros
   searchTerm = signal('');
@@ -287,6 +300,66 @@ export class Pos implements OnInit {
     this.closeConfirmModal();
   }
 
+  openNewClientModal(): void {
+    const modalElement = document.getElementById('newClientModal');
+    if (modalElement) {
+      this.newClientModal = new Modal(modalElement);
+      this.newClientModal.show();
+    }
+  }
+
+  closeNewClientModal(): void {
+    if (this.newClientModal) {
+      this.newClientModal.hide();
+    }
+  }
+
+  resetNewClientForm(): void {
+    this.newClient.set({
+      cedula: '',
+      nombres: '',
+      apellidos: '',
+      telefono: '',
+      correo: '',
+      direccion: '',
+      ciudad: ''
+    });
+  }
+
+  saveNewClient(): void {
+    const client = this.newClient();
+    
+    // Validaciones básicas
+    if (!client.cedula || !client.nombres || !client.apellidos) {
+      toast.error('Cédula, nombres y apellidos son obligatorios');
+      return;
+    }
+
+    this.isSavingClient.set(true);
+
+    this.clientService.create(client as Client).subscribe({
+      next: (newClient) => {
+        toast.success('Cliente creado exitosamente');
+        
+        // Agregar el nuevo cliente a la lista
+        this.clients.update(clients => [...clients, newClient]);
+        
+        // Seleccionar automáticamente el nuevo cliente
+        this.selectedClientId.set(newClient._id!);
+        
+        // Cerrar modal y resetear formulario
+        this.closeNewClientModal();
+        this.resetNewClientForm();
+        this.isSavingClient.set(false);
+      },
+      error: (error) => {
+        console.error('Error al crear cliente:', error);
+        toast.error(error.error?.detail || 'Error al crear cliente');
+        this.isSavingClient.set(false);
+      }
+    });
+  }
+
   getStockBadgeClass(stock: number, stockMinimo: number): string {
     if (stock === 0) return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
     if (stock <= stockMinimo) return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
@@ -343,6 +416,11 @@ export class Pos implements OnInit {
     } else {
       this.descuentoPorcentaje.set(value);
     }
+  }
+
+  onNewClientFieldChange(field: keyof Client, event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.newClient.update(client => ({ ...client, [field]: value }));
   }
 }
 
