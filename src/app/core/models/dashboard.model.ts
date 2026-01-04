@@ -22,6 +22,8 @@ export interface TopClient {
 }
 
 export interface VendedorStats {
+    mis_ventas_hoy: number;
+    mi_total_hoy: number;
     mis_ventas_mes: number;
     mi_total_mes: number;
     top_clientes: TopClient[];

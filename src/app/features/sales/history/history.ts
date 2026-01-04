@@ -61,11 +61,10 @@ export class History implements OnInit {
     if (this.selectedMetodoPago()) params.metodo_pago = this.selectedMetodoPago();
 
     this.saleService.getSales(params).subscribe({
-      next: (sales) => {
-        this.sales.set(sales);
-        this.totalItems.set(sales.length);
-        // Sin paginación real del backend, calculamos páginas basadas en items mostrados
-        this.totalPages.set(sales.length > 0 ? this.currentPage() : 1);
+      next: (response) => {
+        this.sales.set(response.items);
+        this.totalItems.set(response.total);
+        this.totalPages.set(Math.ceil(response.total / this.itemsPerPage()));
         this.isLoading.set(false);
       },
       error: (error) => {
@@ -138,7 +137,22 @@ export class History implements OnInit {
   }
 
   formatDate(dateString: string): string {
-    const date = new Date(dateString);
+    const parts = dateString.split(/[T\s]/);
+    const datePart = parts[0]; 
+    const timePart = parts[1]?.split('.')[0] || '00:00:00';
+    
+    const [year, month, day] = datePart.split('-');
+    const [hour, minute] = timePart.split(':');
+    
+    // Crear fecha con valores locales directamente
+    const date = new Date(
+      parseInt(year),
+      parseInt(month) - 1, // meses en JS van de 0-11
+      parseInt(day),
+      parseInt(hour),
+      parseInt(minute)
+    );
+    
     return date.toLocaleDateString('es-EC', {
       year: 'numeric',
       month: '2-digit',

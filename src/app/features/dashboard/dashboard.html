@@ -32,9 +32,20 @@
                         </svg>
                     </div>
                 </div>
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Ventas Hoy @if (!authService.isAdmin()) { <span class="text-xs">(Mis ventas)</span> }</p>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    @if (authService.isAdmin()) {
+                    Ventas Hoy (Todas)
+                    } @else {
+                    Mis Ventas Hoy
+                    }
+                </p>
+                @if (authService.isAdmin()) {
                 <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ dashboard()!.ventas_hoy }}</p>
                 <p class="text-sm font-semibold text-blue-600 dark:text-blue-400 mt-2">{{ formatPrice(dashboard()!.total_vendido_hoy) }}</p>
+                } @else {
+                <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ dashboard()!.vendedor_stats?.mis_ventas_hoy || 0 }}</p>
+                <p class="text-sm font-semibold text-blue-600 dark:text-blue-400 mt-2">{{ formatPrice(dashboard()!.vendedor_stats?.mi_total_hoy || 0) }}</p>
+                }
             </div>
 
             <!-- Ventas del Mes -->

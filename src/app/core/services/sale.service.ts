@@ -26,7 +26,7 @@ export class SaleService {
     start_date?: string;
     end_date?: string;
     metodo_pago?: string;
-  }): Observable<Sale[]> {
+  }): Observable<{ items: Sale[], total: number }> {
     let httpParams = new HttpParams();
     
     if (params?.search) httpParams = httpParams.set('search', params.search);
@@ -36,7 +36,7 @@ export class SaleService {
     if (params?.end_date) httpParams = httpParams.set('end_date', params.end_date);
     if (params?.metodo_pago) httpParams = httpParams.set('metodo_pago', params.metodo_pago);
 
-    return this.http.get<Sale[]>(this.apiUrl, { params: httpParams });
+    return this.http.get<{ items: Sale[], total: number }>(this.apiUrl, { params: httpParams });
   }
 
   // Obtener detalle de una venta
